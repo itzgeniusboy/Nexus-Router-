@@ -56,20 +56,31 @@ const ForgeCoreCanvas2D: React.FC<{ className?: string }> = ({ className = '' })
 
     window.addEventListener('mousemove', handleMouseMove);
 
-    // Octahedron 3D Geometry vertices (Molten Crystal Core)
-    const vertices = [
-      { x: 0, y: 1.6, z: 0 },    // Top vertex
-      { x: 0, y: -1.6, z: 0 },   // Bottom vertex
-      { x: 1.45, y: 0, z: 0 },   // Right
-      { x: 0, y: 0, z: 1.45 },   // Front
-      { x: -1.45, y: 0, z: 0 },  // Left
-      { x: 0, y: 0, z: -1.45 }   // Back
+    // Geodesic Icosahedron 3D Geometry vertices (Neural Edge Router Node)
+    const t = 1.61803398875;
+    const s = 0.88;
+    const rawVertices = [
+      { x: -1, y:  t, z:  0 },
+      { x:  1, y:  t, z:  0 },
+      { x: -1, y: -t, z:  0 },
+      { x:  1, y: -t, z:  0 },
+      { x:  0, y: -1, z:  t },
+      { x:  0, y:  1, z:  t },
+      { x:  0, y: -1, z: -t },
+      { x:  0, y:  1, z: -t },
+      { x:  t, y:  0, z: -1 },
+      { x:  t, y:  0, z:  1 },
+      { x: -t, y:  0, z: -1 },
+      { x: -t, y:  0, z:  1 }
     ];
+    const vertices = rawVertices.map(v => ({ x: v.x * s, y: v.y * s, z: v.z * s }));
 
-    // 8 Triangular Facets
+    // 20 Triangular Facets of Icosahedron Core
     const faces = [
-      [0, 2, 3], [0, 3, 4], [0, 4, 5], [0, 5, 2],
-      [1, 3, 2], [1, 4, 3], [1, 5, 4], [1, 2, 5]
+      [0, 11, 5], [0, 5, 1], [0, 1, 7], [0, 7, 10], [0, 10, 11],
+      [1, 5, 9], [5, 11, 4], [11, 10, 2], [10, 7, 6], [7, 1, 8],
+      [3, 9, 4], [3, 4, 2], [3, 2, 6], [3, 6, 8], [3, 8, 9],
+      [4, 9, 5], [2, 4, 11], [6, 2, 10], [8, 6, 7], [9, 8, 1]
     ];
 
     // Embers Particle Pool
@@ -356,8 +367,8 @@ export const ForgeCore3D: React.FC<ForgeCore3DProps> = ({ className = '' }) => {
     const forgeGroup = new THREE.Group();
     scene.add(forgeGroup);
 
-    // Molten Crystal / Anvil-Core Shape
-    const coreGeo = new THREE.OctahedronGeometry(1.65, 0);
+    // Molten Cyber Neural Router Mesh (Faceted Geodesic Core)
+    const coreGeo = new THREE.IcosahedronGeometry(1.55, 0);
     const metalMat = new THREE.MeshStandardMaterial({
       color: 0x1f1a14,
       metalness: 0.92,

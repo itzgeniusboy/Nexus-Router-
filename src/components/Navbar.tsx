@@ -25,6 +25,34 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Safe localStorage read — avoids JSON parse crash in JSX render
+  const [pooledAccountCount, setPooledAccountCount] = useState<number>(() => {
+    try {
+      const raw = localStorage.getItem('nexus_pooled_gmails');
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? Math.max(parsed.length, 1) : 1;
+    } catch {
+      return 1;
+    }
+  });
+
+  // Sync count when modal closes (storage event doesn't fire same-tab, so poll on focus)
+  useEffect(() => {
+    const sync = () => {
+      try {
+        const raw = localStorage.getItem('nexus_pooled_gmails');
+        const parsed = raw ? JSON.parse(raw) : [];
+        setPooledAccountCount(Array.isArray(parsed) ? Math.max(parsed.length, 1) : 1);
+      } catch { /* ignore */ }
+    };
+    window.addEventListener('focus', sync);
+    window.addEventListener('storage', sync);
+    return () => { 
+      window.removeEventListener('focus', sync); 
+      window.removeEventListener('storage', sync); 
+    };
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -102,7 +130,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="ios-tap px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#1e1e24] hover:bg-[#282830] border border-[#FFB627]/30 text-slate-200 hover:text-white flex items-center gap-1.5 cursor-pointer shadow-sm"
             >
               <Shuffle className="w-3.5 h-3.5 text-[#FF6B35]" />
-              <span>Accounts ({localStorage.getItem('nexus_pooled_gmails') ? JSON.parse(localStorage.getItem('nexus_pooled_gmails') || '[]').length || 1 : 1})</span>
+              <span>Accounts ({pooledAccountCount})</span>
             </button>
           )}
 

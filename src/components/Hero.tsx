@@ -45,10 +45,12 @@ export const Hero: React.FC<HeroProps> = ({
   }, []);
 
   const [masterToken, setMasterToken] = useState<string>(() => {
-    const saved = localStorage.getItem('nxf_user_master_token');
-    if (saved) return saved;
-    const newToken = `forge_live_${Math.random().toString(36).substring(2, 10)}${Math.random().toString(36).substring(2, 10)}`;
-    localStorage.setItem('nxf_user_master_token', newToken);
+    // migrate old forge_ / nxf_ keys to unified nexus_ namespace
+    const saved = localStorage.getItem('nexus_user_master_token')
+      || localStorage.getItem('nxf_user_master_token');
+    if (saved) { localStorage.setItem('nexus_user_master_token', saved); return saved; }
+    const newToken = `nxg_live_${Math.random().toString(36).substring(2, 10)}${Math.random().toString(36).substring(2, 10)}`;
+    localStorage.setItem('nexus_user_master_token', newToken);
     return newToken;
   });
 
@@ -90,7 +92,7 @@ export const Hero: React.FC<HeroProps> = ({
       const data = await res.json();
       if (data.newToken) {
         setMasterToken(data.newToken);
-        localStorage.setItem('nxf_user_master_token', data.newToken);
+        localStorage.setItem('nexus_user_master_token', data.newToken);
       }
     } catch (e) {
       console.error('Rotate failed', e);
@@ -117,7 +119,7 @@ export const Hero: React.FC<HeroProps> = ({
       });
       const elapsed = Date.now() - startTime;
       const data = await res.json();
-      const accountHeader = res.headers.get('X-Forge-Account') || 'Google AI Studio (Pool #1)';
+      const accountHeader = res.headers.get('X-Nexus-Account') || res.headers.get('X-Forge-Account') || 'Nexus Edge Router (Groq/Silicon)';
       setPingResult({
         status: res.status,
         account: accountHeader,
@@ -126,12 +128,13 @@ export const Hero: React.FC<HeroProps> = ({
         reply: data.choices?.[0]?.message?.content || 'ForgeAPI core is operational. High-temperature edge routing online.'
       });
     } catch {
+      // Show honest error — don't fake success
       setPingResult({
-        status: 200,
-        account: 'Molten Core (Pool #1 - Failover Ready)',
-        model: 'deepseek-ai/DeepSeek-R1',
-        latency: 28,
-        reply: 'Pong! Nexus Gateway edge pool active. Auto 429 failover standby.'
+        status: 0,
+        account: 'Connection failed — check server',
+        model: 'N/A',
+        latency: Date.now() - startTime,
+        reply: 'Gateway unreachable. Make sure the dev server is running on the correct port.'
       });
     } finally {
       setIsPinging(false);
@@ -158,7 +161,7 @@ export const Hero: React.FC<HeroProps> = ({
   };
 
   return (
-    <section id="hero" className="relative min-h-[96vh] pt-32 pb-20 lg:pt-36 lg:pb-28 overflow-hidden flex items-center bg-[#121212] iso-grid">
+    <section id="hero" className="relative min-h-[96vh] pt-36 pb-20 lg:pt-40 lg:pb-28 overflow-hidden flex items-center bg-[#121212] iso-grid">
       {/* Background Ember Particles */}
       <EmberCanvas className="opacity-70" />
 
@@ -196,7 +199,7 @@ export const Hero: React.FC<HeroProps> = ({
 
             {/* Subtitle: Super friendly explanation */}
             <p className="text-base sm:text-lg text-slate-300 max-w-xl leading-relaxed font-normal">
-              Bina kisi API key ke turant shuru karein! Apni multiple Gmail IDs jod kar daily limit badhayein, ya ek click mein DeepSeek, Llama 3.3 aur Gemini ko Cursor &amp; VS Code mein chalayein.
+              Bina kisi API key ke turant shuru karein! Apni multiple provider accounts jod kar daily limit badhayein, ya ek click mein DeepSeek, Llama 3.3 aur Qwen ko Cursor &amp; VS Code mein chalayein.
             </p>
 
             {/* 3-Step Simple Visual Guide */}
@@ -214,10 +217,10 @@ export const Hero: React.FC<HeroProps> = ({
               <div className="p-2.5 rounded-xl bg-black/40 border border-white/[0.06] flex flex-col">
                 <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-bold font-mono mb-1">
                   <span className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center text-[10px]">2</span>
-                  <span>Gmail Jodein</span>
+                  <span>Pool Jodein</span>
                 </div>
                 <span className="text-[11px] text-slate-400 leading-snug">
-                  1-Click mein Gemini + providers link karein.
+                  1-Click mein multi-provider accounts link karein.
                 </span>
               </div>
 
@@ -422,10 +425,18 @@ export const Hero: React.FC<HeroProps> = ({
 
               {/* Live Ping Status Indicator (iOS Dynamic Island Style) */}
               {pingResult && (
-                <div className="mt-3 p-2.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-[10px] font-mono text-emerald-300 flex items-center justify-between shadow-sm">
+                <div className={`mt-3 p-2.5 rounded-2xl text-[10px] font-mono flex items-center justify-between shadow-sm ${
+                  pingResult.status === 0 || pingResult.status >= 400
+                    ? 'bg-red-950/40 border border-red-500/30 text-red-300'
+                    : 'bg-emerald-950/40 border border-emerald-500/30 text-emerald-300'
+                }`}>
                   <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                    <span>HTTP {pingResult.status} &bull; {pingResult.latency}ms</span>
+                    <span className={`w-2 h-2 rounded-full ${
+                      pingResult.status === 0 || pingResult.status >= 400
+                        ? 'bg-red-400'
+                        : 'bg-emerald-400 animate-ping'
+                    }`} />
+                    <span>{pingResult.status === 0 ? 'ERR' : `HTTP ${pingResult.status}`} &bull; {pingResult.latency}ms</span>
                   </div>
                   <span className="truncate ml-2 text-slate-300">{pingResult.account}</span>
                 </div>

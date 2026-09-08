@@ -53,9 +53,24 @@ export interface CustomProviderConfig {
   name: string;
   baseUrl: string;
   apiKey?: string;
-  modelName: string;
+  modelName?: string;
+  customModels?: string[];
+  isLocalhost?: boolean;
+  status?: string;
   addedAt: string;
   notes?: string;
+}
+
+export interface UnifiedAccount {
+  id: string;
+  email: string;
+  provider: string;
+  dailyQuota: number;
+  quotaUsedToday: number;
+  lastResetDate: string;
+  status: 'active' | 'rate_limited' | 'error' | 'revoked';
+  addedAt: string;
+  apiKey?: string;
 }
 
 export interface ModelProvider {
