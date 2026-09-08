@@ -1,0 +1,6 @@
+{
+  "name": "Nexus Gateway",
+  "description": "Nexus Gateway — Zero-rate-limit AI API edge pooling hub. Combine multiple free Google AI Studio accounts into one master OpenAI-compatible endpoint with instant 429 failover.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

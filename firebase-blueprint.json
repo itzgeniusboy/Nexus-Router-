@@ -1,0 +1,82 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Primary user profile owning the API vault",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "description": "Primary user email" },
+        "displayName": { "type": "string", "description": "User display name" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" }
+      },
+      "required": ["uid", "email"]
+    },
+    "ConnectedAccount": {
+      "title": "ConnectedAccount",
+      "description": "Connected Gmail or Google account in the multi-login vault",
+      "type": "object",
+      "properties": {
+        "accountId": { "type": "string", "description": "Unique ID for the account" },
+        "email": { "type": "string", "description": "Connected Gmail address" },
+        "displayName": { "type": "string", "description": "Account display name" },
+        "photoURL": { "type": "string", "description": "Account avatar" },
+        "status": { "type": "string", "enum": ["active", "pending", "disconnected"], "description": "Account connection status" },
+        "addedAt": { "type": "string", "description": "Timestamp when connected" },
+        "lastSyncedAt": { "type": "string", "description": "Last extraction sync timestamp" }
+      },
+      "required": ["accountId", "email", "status"]
+    },
+    "ExtractedApiKey": {
+      "title": "ExtractedApiKey",
+      "description": "Extracted API key associated with a connected Gmail account and AI provider",
+      "type": "object",
+      "properties": {
+        "keyId": { "type": "string", "description": "Unique key record identifier" },
+        "accountId": { "type": "string", "description": "ID of the associated connected Gmail account" },
+        "accountEmail": { "type": "string", "description": "Email address of the associated account" },
+        "provider": { "type": "string", "description": "AI Provider name e.g. google_ai, openai, anthropic, groq, deepseek" },
+        "providerName": { "type": "string", "description": "Human-readable provider name" },
+        "apiKey": { "type": "string", "description": "Extracted API key or token" },
+        "status": { "type": "string", "enum": ["valid", "checking", "invalid", "revoked"], "description": "Key validity status" },
+        "quotaTier": { "type": "string", "description": "Quota tier e.g. Free Tier, Tier 1, Pro" },
+        "extractedAt": { "type": "string", "description": "Extraction timestamp" },
+        "lastTestedAt": { "type": "string", "description": "Last verification timestamp" }
+      },
+      "required": ["keyId", "accountId", "accountEmail", "provider", "apiKey"]
+    },
+    "UnifiedGateway": {
+      "title": "UnifiedGateway",
+      "description": "Synthesized unified gateway pooling multi-Gmail accounts and API keys into a single endpoint",
+      "type": "object",
+      "properties": {
+        "gatewayId": { "type": "string", "description": "Unique gateway identifier" },
+        "endpointUrl": { "type": "string", "description": "Unified endpoint URL" },
+        "masterToken": { "type": "string", "description": "Master access token" },
+        "activeAccountsCount": { "type": "number", "description": "Number of linked accounts" },
+        "totalKeysCount": { "type": "number", "description": "Total pooled keys" },
+        "aggregatedRpm": { "type": "number", "description": "Combined requests per minute" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" }
+      },
+      "required": ["gatewayId", "endpointUrl", "masterToken"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Primary user profile document"
+    },
+    "/users/{userId}/connected_accounts/{accountId}": {
+      "schema": "ConnectedAccount",
+      "description": "Connected Gmail accounts under the user"
+    },
+    "/users/{userId}/api_vault/{keyId}": {
+      "schema": "ExtractedApiKey",
+      "description": "Extracted API keys belonging to the user"
+    },
+    "/users/{userId}/gateways/{gatewayId}": {
+      "schema": "UnifiedGateway",
+      "description": "Synthesized unified gateways for user"
+    }
+  }
+}

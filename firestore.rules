@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // User profile document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // Connected Gmail accounts subcollection
+      match /connected_accounts/{accountId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // API key vault subcollection
+      match /api_vault/{keyId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // Unified gateway subcollection
+      match /gateways/{gatewayId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Default deny all other paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

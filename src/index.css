@@ -1,0 +1,239 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Plus Jakarta Sans", "Inter", sans-serif;
+    background-color: #121212;
+    color: #F3F4F6;
+    letter-spacing: -0.015em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4, .font-display {
+    font-family: "Outfit", -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+  }
+  code, pre, .font-mono {
+    font-family: "JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, monospace;
+  }
+}
+
+/* ==========================================================================
+   Apple iOS / VisionOS Glassmorphism & Capsule Design Tokens
+   ========================================================================== */
+
+/* Authentic Apple-grade Frosted Glass Panel */
+.ios-glass {
+  background: rgba(24, 24, 28, 0.72);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 
+    0 20px 50px -10px rgba(0, 0, 0, 0.75),
+    0 1px 1px 0 rgba(255, 255, 255, 0.14) inset;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ios-glass:hover {
+  border-color: rgba(255, 182, 39, 0.35);
+  box-shadow: 
+    0 24px 60px -8px rgba(0, 0, 0, 0.85),
+    0 0 28px -4px rgba(255, 107, 53, 0.25),
+    0 1px 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
+
+/* iOS Floating Dynamic Island Dock Navbar */
+.ios-dock {
+  background: rgba(20, 20, 24, 0.78);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 16px 48px -6px rgba(0, 0, 0, 0.85),
+    0 0 0 1px rgba(255, 182, 39, 0.1),
+    0 1px 1px 0 rgba(255, 255, 255, 0.18) inset;
+}
+
+/* iOS UISegmentedControl Track */
+.ios-segmented {
+  background: rgba(14, 14, 16, 0.85);
+  padding: 4px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) inset;
+}
+
+/* Tactile Micro-Haptic Click Feedback */
+.ios-tap {
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.15s ease;
+}
+.ios-tap:active {
+  transform: scale(0.965);
+}
+
+/* iOS Capsule Pill Badge */
+.ios-pill {
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.08) inset;
+}
+
+/* ==========================================================================
+   Isometric Blueprint Grid & Architectural Depth
+   ========================================================================== */
+.iso-grid {
+  background-image: 
+    linear-gradient(30deg, rgba(255, 255, 255, 0.02) 12%, transparent 12.5%, transparent 87%, rgba(255, 255, 255, 0.02) 87.5%, rgba(255, 255, 255, 0.02)),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.02) 12%, transparent 12.5%, transparent 87%, rgba(255, 255, 255, 0.02) 87.5%, rgba(255, 255, 255, 0.02)),
+    linear-gradient(30deg, rgba(255, 255, 255, 0.02) 12%, transparent 12.5%, transparent 87%, rgba(255, 255, 255, 0.02) 87.5%, rgba(255, 255, 255, 0.02)),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.02) 12%, transparent 12.5%, transparent 87%, rgba(255, 255, 255, 0.02) 87.5%, rgba(255, 255, 255, 0.02)),
+    linear-gradient(60deg, rgba(255, 182, 39, 0.015) 25%, transparent 25.5%, transparent 75%, rgba(255, 182, 39, 0.015) 75%, rgba(255, 182, 39, 0.015)),
+    linear-gradient(60deg, rgba(255, 182, 39, 0.015) 25%, transparent 25.5%, transparent 75%, rgba(255, 182, 39, 0.015) 75%, rgba(255, 182, 39, 0.015));
+  background-size: 80px 140px;
+  background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
+}
+
+/* Industrial Metallic Texture & Shimmer */
+.metallic-card {
+  background: linear-gradient(145deg, #1f1f23 0%, #151518 50%, #19191d 100%);
+  border: 1px solid rgba(255, 182, 39, 0.2);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 16px 40px -6px rgba(0, 0, 0, 0.7),
+    0 1px 1px 0 rgba(255, 255, 255, 0.1) inset;
+}
+
+.metallic-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 182, 39, 0.1) 50%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  transition: 0.85s ease;
+  pointer-events: none;
+}
+
+.metallic-card:hover::before {
+  left: 100%;
+}
+
+/* 3D Perspective Containers */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* Charcoal & Ember Gradient Mesh Backgrounds */
+.bg-mesh-industrial {
+  background: 
+    radial-gradient(circle at 15% 15%, rgba(255, 107, 53, 0.14) 0%, transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(255, 182, 39, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 50% 65%, rgba(13, 59, 59, 0.25) 0%, transparent 55%),
+    radial-gradient(circle at 80% 85%, rgba(255, 107, 53, 0.1) 0%, transparent 45%),
+    #121212;
+}
+
+.bg-mesh-footer-forge {
+  background: 
+    radial-gradient(ellipse at 50% 100%, rgba(255, 107, 53, 0.35) 0%, transparent 65%),
+    radial-gradient(ellipse at 20% 90%, rgba(255, 182, 39, 0.22) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(13, 59, 59, 0.4) 0%, transparent 50%),
+    linear-gradient(180deg, #121212 0%, #0a0a0a 100%);
+}
+
+/* Molten Gold & Burnt Orange Buttons with Tactile Press */
+.btn-forge-primary {
+  background: linear-gradient(135deg, #FF6B35 0%, #FFB627 100%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #0c0c0c;
+  font-weight: 700;
+  box-shadow: 
+    0 0 24px -2px rgba(255, 107, 53, 0.6),
+    0 1px 1px 0 rgba(255, 255, 255, 0.3) inset;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-forge-primary:hover {
+  box-shadow: 
+    0 0 36px 4px rgba(255, 182, 39, 0.75),
+    0 0 12px 0 rgba(255, 107, 53, 0.9),
+    0 1px 1px 0 rgba(255, 255, 255, 0.4) inset;
+  transform: translateY(-2px);
+}
+
+.btn-forge-primary:active {
+  transform: scale(0.96) translateY(0);
+}
+
+.btn-forge-secondary {
+  background: rgba(30, 30, 36, 0.8);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 182, 39, 0.25);
+  color: #FFB627;
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.4),
+    0 1px 0 0 rgba(255, 255, 255, 0.08) inset;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-forge-secondary:hover {
+  background: rgba(45, 45, 52, 0.92);
+  border-color: rgba(255, 182, 39, 0.6);
+  box-shadow: 0 0 20px rgba(255, 182, 39, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-forge-secondary:active {
+  transform: scale(0.965);
+}
+
+/* Molten Ember Particle Keyframes */
+@keyframes floatEmber {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateY(-60px) translateX(15px) scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-140px) translateX(-10px) scale(0.6);
+    opacity: 0;
+  }
+}
+
+.animate-ember {
+  animation: floatEmber 4s ease-in-out infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #121212;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #FF6B35;
+}
